@@ -1,0 +1,37 @@
+.square {
+    position: relative;
+    width: 50%;
+    border: 1px solid blue;
+}
+
+.square:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.grid-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: darkgrey;
+    display: inline-block;
+    border: 2px solid black;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap: 2px;
+    height: 100%;
+}
+
+.cell {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background: white;
+}
