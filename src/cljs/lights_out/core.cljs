@@ -40,24 +40,39 @@
   [:section.section>div.container>div.content
    [:img {:src "/img/warning_clojure.png"}]])
 
+(defn choose-size []
+  (let [grid-size @(rf/subscribe [:setup/grid-size])]
+    [:div.field.is-horizontal
+     [:div.field-label.is-normal>label.label "Grid Size"]
+     [:div.field-body>div.field.is-narrow>p.control
+      [:input.input {:type "number"
+                     :min 1
+                     :max 26
+                     :on-change #(rf/dispatch [:setup/size-changed (-> % .-target .-value)])
+                     :value grid-size}]]]))
+
+(defn setup []
+  [:div.box
+   [choose-size]])
+
 (defn grid-cell [row col]
   (let [key (str row "-" col)]
     ^{:key key} [:div.cell key]))
 
 (defn grid []
-  [:div.grid-container
-   (into [:div.grid]
-         (for [row (range 5)
-               col (range 5)]
-           [grid-cell row col]))])
-
-(defn square []
-  [:div.square
-   [grid]])
+  (let [grid-size @(rf/subscribe [:setup/grid-size])]
+    [:div.box>div.square>div.grid-container
+      (into [:div.grid
+             {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
+                      :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
+            (for [row (range grid-size)
+                  col (range grid-size)]
+              [grid-cell row col]))]))
 
 (defn home-page []
   [:section.section>div.container>div.content
-   [square]])
+   [setup]
+   [grid]])
 
 (defn page []
   (if-let [page @(rf/subscribe [:common/page])]
