@@ -1,4 +1,4 @@
-(ns lights-out.events
+(ns lights-out.state.routing
   (:require
    [re-frame.core :as rf]
    [ajax.core :as ajax]
@@ -7,11 +7,6 @@
    [clojure.pprint :as pp]))
 
 ;;dispatchers
-
-(rf/reg-event-db
- :setup/size-changed
- (fn [db [_ new-size]]
-   (assoc-in db [:setup :grid-size] new-size)))
 
 (rf/reg-event-db
   :common/navigate
@@ -39,16 +34,9 @@
 (rf/reg-event-fx
   :page/init-home
   (fn [{db :db} _]
-    {:db (if (get-in db [:setup :grid-size])
-           db
-           (assoc-in db [:setup :grid-size] 6))}))
+    {:dispatch [:setup/init]}))
 
 ;;subscriptions
-
-(rf/reg-sub
- :setup/grid-size
- (fn [db _]
-   (-> db :setup :grid-size)))
 
 (rf/reg-sub
   :common/route

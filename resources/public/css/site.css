@@ -35,3 +35,11 @@
     display: flex;
     background: white;
 }
+
+.lit {
+    background-color: yellow;
+}
+
+.unlit {
+    background-color: lightgrey;
+}
