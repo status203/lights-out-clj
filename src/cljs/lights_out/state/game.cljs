@@ -3,16 +3,17 @@
             
             [lights-out.domain :as domain]))
 
-;; app-db
-;;   :game
-;;     :board
-
-;; handlers
+(def initial-state
+  {:game
+   {:grid-size 5
+    :board (into [] (repeat 25 false))}}) ; whether cells are lit, left->right, top->bottom
 
 (rf/reg-event-db
  :game/new-board
  (fn [db [_ size]]
-   (assoc-in db [:game :board] (domain/new-board size))))
+   (-> db 
+       (assoc-in [:game :board] (domain/new-board size))
+       (assoc-in [:game :grid-size] size))))
 
 
 ;; subscriptions
@@ -21,3 +22,8 @@
  :game/board
  (fn [db [_]]
    (-> db :game :board)))
+
+(rf/reg-sub
+ :game/grid-size
+ (fn [db [_]]
+   (-> db :game :grid-size)))

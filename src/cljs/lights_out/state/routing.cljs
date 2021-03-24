@@ -34,7 +34,7 @@
 (rf/reg-event-fx
   :page/init-home
   (fn [{db :db} _]
-    {:dispatch [:setup/init]}))
+    nil))
 
 ;;subscriptions
 

@@ -5,7 +5,7 @@
    [reagent.core :as r]
    [re-frame.core :as rf]
    [lights-out.ajax :as ajax]
-   [lights-out.state.load-all]
+   [lights-out.state.app]
    [reitit.core :as reitit]
    [reitit.frontend.easy :as rfe]
 
@@ -64,6 +64,7 @@
 ;; Initialize app
 (defn ^:dev/after-load mount-components []
   (rf/clear-subscription-cache!)
+  (rf/dispatch [:app/initial-state])
   (rdom/render [#'page] (.getElementById js/document "app")))
 
 (defn init! []

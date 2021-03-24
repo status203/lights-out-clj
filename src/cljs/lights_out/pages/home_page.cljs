@@ -1,5 +1,6 @@
 (ns lights-out.pages.home-page
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [clojure.pprint :as pp]))
 
 (defn choose-size []
   (let [grid-size @(rf/subscribe [:setup/grid-size])]
@@ -12,16 +13,19 @@
                      :on-change #(rf/dispatch [:setup/size-changed (-> % .-target .-value int)])
                      :value grid-size}]]]))
 
-(defn setup []
-  [:div.box
-   [choose-size]])
+(defn setup-errors [errors]
+  (into [:div.setup-errors]
+         (map (fn [error] [:div.setup-error error]) errors)))
 
-(defn grid-cell [row col]
-  (let [key (str row "-" col)]
-    ^{:key key} [:div.cell key]))
+(defn setup []
+  (let [errors @(rf/subscribe [:setup/errors])]
+    [:div.box
+     [choose-size]
+     [:div.control>a.button.is-primary {:on-click #(rf/dispatch [:setup/new-game])} "New Game"]
+     (when errors [setup-errors errors])]))
 
 (defn grid []
-  (let [grid-size @(rf/subscribe [:setup/grid-size])
+  (let [grid-size @(rf/subscribe [:game/grid-size])
         board @(rf/subscribe [:game/board])]
     [:div.box>div.square>div.grid-container
      (into [:div.grid
