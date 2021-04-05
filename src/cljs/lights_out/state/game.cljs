@@ -15,6 +15,10 @@
        (assoc-in [:game :board] (domain/new-board size))
        (assoc-in [:game :grid-size] size))))
 
+(rf/reg-event-db
+ :game/toggle-cell
+ (fn [db [_ index]]
+   (domain/toggle-cell (-> db :game :board) index)))
 
 ;; subscriptions
 

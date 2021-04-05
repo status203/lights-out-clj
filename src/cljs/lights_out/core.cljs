@@ -9,7 +9,7 @@
    [reitit.core :as reitit]
    [reitit.frontend.easy :as rfe]
 
-   [lights-out.pages.home-page :refer [home-page]]))
+   [lights-out.views.home-page :refer [home-page]]))
 
 (defn nav-link [uri title page]
   [:a.navbar-item

@@ -1,4 +1,4 @@
-(ns lights-out.pages.home-page
+(ns lights-out.views.home-page
   (:require [re-frame.core :as rf]
             [clojure.pprint :as pp]))
 
@@ -31,7 +31,10 @@
      (into [:div.grid
             {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
                      :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
-           (map-indexed (fn [i lit] ^{:key (str i)} [:div.cell {:class (if lit "lit" "unlit")}]) board)
+           (map-indexed (fn [index lit] 
+                          ^{:key (str index)} 
+                          [:div.cell {:class (if lit "lit" "unlit")
+                                      :on-click #(rf/dispatch [:game/toggle-cell index])}]) board)
            )]))
 
 (defn home-page []
