@@ -62,6 +62,7 @@
 
 ;; -------------------------
 ;; Initialize app
+
 (defn ^:dev/after-load mount-components []
   (rf/clear-subscription-cache!)
   (rf/dispatch [:app/initial-state])

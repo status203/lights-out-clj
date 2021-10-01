@@ -18,6 +18,7 @@
 (s/def ::board (s/coll-of boolean?))
 
 (s/def ::game (s/and (s/keys :req (::grid-size ::board))
+                     #(<= 1 (::grid-size %) 26)
                      #(= (* (::grid-size %) (::grid-size %))
                          (count (::board %)))))
 
@@ -34,10 +35,32 @@
 (defn valid-state?
   "validate the given db, writing any problems to console.error"
   [db]
-  (let [res (validation/check ::app db)]
+  (let [res (validation/check ::app-schema db)]
     (when (some? res)
       (.error js/console (str "schema problem: " res)))))
 
-(def standard-interceptors
-  [(when ^boolean goog.DEBUG rf/debug)
-   (when ^boolean goog.DEBUG (rf/after valid-state?))])
+(def debug? ^boolean goog.DEBUG)
+(def standard-interceptors-db
+  [(when debug? rf/debug)
+   (when debug? (rf/after valid-state?))])
+(def standard-interceptors-fx
+  [(when debug? rf/debug)    ;; as before
+   (when debug? (rf/after #(when % (valid-state? %))))])
+
+(defn reg-event-db  ;; alternative to rf/reg-event-db
+  ([id handler-fn]
+   (rf/reg-event-db id standard-interceptors-db handler-fn))
+  ([id interceptors handler-fn]
+   (rf/reg-event-db
+    id
+    [standard-interceptors-db interceptors]
+    handler-fn)))
+
+(defn reg-event-fx ;; alternative to reg-event-db
+  ([id handler-fn]
+   (rf/reg-event-fx id standard-interceptors-fx handler-fn))
+  ([id interceptors handler-fn]
+   (re-frame.core/reg-event-fx
+    id
+    [standard-interceptors-fx interceptors]
+    handler-fn)))

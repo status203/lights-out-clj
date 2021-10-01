@@ -9,7 +9,7 @@
  :setup/size-changed
  (fn [db [_ new-size]]
    (if (< 0 new-size 27)
-     (assoc-in db [::los/setup] {::los/grid-size new-size :errors nil})
+     (assoc-in db [::los/setup] {::los/grid-size new-size ::los/errors nil})
      (assoc-in db [::los/setup ::los/errors] ["Size must be between 1 & 26"]))))
 
 (rf/reg-event-fx

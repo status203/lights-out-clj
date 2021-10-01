@@ -8,4 +8,13 @@
   [spec value]
   (if (= ::s/invalid (s/conform spec value))
     (s/explain-str spec value)
-    value))
+    nil))
+
+(defn validate
+  "If spec conforms then returns nil, otherwise returns an error string"
+  [spec value]
+  (if (= ::s/invalid (s/conform spec value))
+    (let [error (s/explain-str spec value)]
+      #?(:clj (throw (AssertionError. error)))
+      #?(:cljs (js/Error error)))
+    nil))
