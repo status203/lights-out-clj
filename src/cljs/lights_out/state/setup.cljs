@@ -1,11 +1,7 @@
 (ns lights-out.state.setup
-  (:require [re-frame.core :as rf]))
-
-(def initial-state
-  {:setup
-   {:grid-size 5
-    :errors nil ; nil, or vector of error messages.
-    }})
+  (:require 
+   [lights-out.state.core :as los]
+   [re-frame.core :as rf]))
 
 ;; handlers
 
@@ -13,22 +9,22 @@
  :setup/size-changed
  (fn [db [_ new-size]]
    (if (< 0 new-size 27)
-     (assoc-in db [:setup] {:grid-size new-size :errors nil})
-     (assoc-in db [:setup :errors] ["Size must be between 1 & 26"]))))
+     (assoc-in db [::los/setup] {::los/grid-size new-size :errors nil})
+     (assoc-in db [::los/setup ::los/errors] ["Size must be between 1 & 26"]))))
 
 (rf/reg-event-fx
  :setup/new-game
  (fn [{db :db} _]
-   {:dispatch [:game/new-board (-> db :setup :grid-size)]}))
+   {:dispatch [:game/new-board (-> db ::los/setup ::los/grid-size)]}))
 
 ;; subscriptions
 
 (rf/reg-sub
  :setup/grid-size
  (fn [db _]
-   (-> db :setup :grid-size)))
+   (-> db ::los/setup ::los/grid-size)))
 
 (rf/reg-sub
  :setup/errors
  (fn [db _]
-   (-> db :setup :errors)))
+   (-> db ::los/setup ::los/errors)))

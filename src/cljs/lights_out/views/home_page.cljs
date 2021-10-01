@@ -1,6 +1,6 @@
 (ns lights-out.views.home-page
-  (:require [re-frame.core :as rf]
-            [clojure.pprint :as pp]))
+  (:require [lights-out.state.core :as los]
+            [re-frame.core :as rf]))
 
 (defn choose-size []
   (let [grid-size @(rf/subscribe [:setup/grid-size])]

@@ -16,5 +16,3 @@ package.json
 shadow-cljs.edn
 /node_modules
 /log
-.lsp/
-.calva/

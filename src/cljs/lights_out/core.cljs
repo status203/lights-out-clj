@@ -38,7 +38,7 @@
    [:img {:src "/img/warning_clojure.png"}]])
 
 (defn page []
-  (if-let [page @(rf/subscribe [:common/page])]
+  (when-let [page @(rf/subscribe [:common/page])]
     [:div
      [navbar]
      [page]]))
