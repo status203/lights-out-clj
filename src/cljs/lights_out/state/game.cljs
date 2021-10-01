@@ -14,7 +14,11 @@
 (los/reg-event-db
  :game/toggle-cell
  (fn [db [_ index]]
-   (domain/toggle-cell (-> db ::los/game ::los/board) index)))
+   (update-in db 
+              [::los/game ::los/board]
+              domain/toggle-cell 
+              (-> db ::los/game ::los/grid-size)
+              index)))
 
 ;; subscriptions
 
