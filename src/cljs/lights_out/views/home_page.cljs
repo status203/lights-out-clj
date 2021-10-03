@@ -24,9 +24,9 @@
      [:div.control>a.button.is-primary {:on-click #(rf/dispatch [:setup/new-game])} "New Game"]
      (when errors [setup-errors errors])]))
 
-(defn grid []
+(defn game []
   (let [grid-size @(rf/subscribe [:game/grid-size])
-        board @(rf/subscribe [:game/board])]
+        grid @(rf/subscribe [:game/grid])]
     [:div.box>div.square>div.grid-container
      (into [:div.grid
             {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
@@ -34,11 +34,11 @@
            (map-indexed (fn [index lit] 
                           ^{:key (str index)} 
                           [:div.cell {:class (if lit "lit" "unlit")
-                                      :on-click #(rf/dispatch [:game/toggle-cell index])}]) board)
+                                      :on-click #(rf/dispatch [:game/toggle-cell index])}]) grid)
            )]))
 
 (defn home-page []
   [:section.section>div.container>div.content
    [setup]
-   [grid]])
+   [game]])
 

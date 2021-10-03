@@ -15,12 +15,13 @@
 
 ;; Game
 ; Whether cells are lit, left to right, top-to-bottom
-(s/def ::board (s/coll-of boolean?))
+(s/def ::grid (s/coll-of boolean?))
+(s/def ::board (s/and (s/keys :req [::grid-size ::grid])
+                      #(<= 1 (::grid-size %) 26)
+                      #(= (* (::grid-size %) (::grid-size %))
+                          (count (::grid %)))))
 
-(s/def ::game (s/and (s/keys :req (::grid-size ::board))
-                     #(<= 1 (::grid-size %) 26)
-                     #(= (* (::grid-size %) (::grid-size %))
-                         (count (::board %)))))
+(s/def ::game (s/and (s/keys :req [::board]))) ; Will also contain history later
 
 (s/def ::app-schema (s/keys :req [::setup ::game]))
 ;; # State
@@ -28,8 +29,8 @@
 (def initial-state
   {::setup {::grid-size 5
             ::errors nil}
-   ::game {::grid-size 5
-           ::board (into [] (repeat 25 false))}})
+   ::game {::board {::grid-size 5
+                    ::grid (into [] (repeat 25 false))}}})
 
 ;; # Standard interceptors. See https://day8.github.io/re-frame/Debugging/
 (defn valid-state?

@@ -7,27 +7,22 @@
 (los/reg-event-db
  :game/new-board
  (fn [db [_ size]]
-   (-> db 
-       (assoc-in [::los/game ::los/board] (domain/new-board size))
-       (assoc-in [::los/game ::los/grid-size] size))))
+   (-> db
+       (assoc-in [::los/game ::los/board] (domain/new-board size)))))
 
 (los/reg-event-db
  :game/toggle-cell
- (fn [db [_ index]]
-   (update-in db 
-              [::los/game ::los/board]
-              domain/toggle-cell 
-              (-> db ::los/game ::los/grid-size)
-              index)))
+ (fn [db [_ cell]]
+   (update-in db [::los/game ::los/board] domain/toggle-cell-in-board cell)))
 
 ;; subscriptions
 
 (rf/reg-sub
- :game/board
+ :game/grid
  (fn [db [_]]
-   (-> db ::los/game ::los/board)))
+   (-> db ::los/game ::los/board ::los/grid)))
 
 (rf/reg-sub
  :game/grid-size
  (fn [db [_]]
-   (-> db ::los/game ::los/grid-size)))
+   (-> db ::los/game ::los/board ::los/grid-size)))
