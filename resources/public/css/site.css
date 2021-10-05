@@ -19,6 +19,18 @@
     background: darkgrey;
     display: inline-block;
     border: 2px solid black;
+    z-index: 1;
+}
+
+.success {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    text-align: center;
+    background-color: rgba(0, 255, 0, 0.5);
+    font-size: 200%;
 }
 
 .grid {

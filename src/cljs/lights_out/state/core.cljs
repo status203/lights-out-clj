@@ -21,7 +21,8 @@
                       #(= (* (::grid-size %) (::grid-size %))
                           (count (::grid %)))))
 
-(s/def ::game (s/and (s/keys :req [::board]))) ; Will also contain history later
+(s/def ::game (s/nilable 
+               (s/and (s/keys :req [::board])))) ; Will also contain history later
 
 (s/def ::app-schema (s/keys :req [::setup ::game]))
 ;; # State
@@ -29,8 +30,7 @@
 (def initial-state
   {::setup {::grid-size 5
             ::errors nil}
-   ::game {::board {::grid-size 5
-                    ::grid (into [] (repeat 25 false))}}})
+   ::game nil})
 
 ;; # Standard interceptors. See https://day8.github.io/re-frame/Debugging/
 (defn valid-state?

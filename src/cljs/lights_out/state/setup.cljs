@@ -15,7 +15,7 @@
 (rf/reg-event-fx
  :setup/new-game
  (fn [{db :db} _]
-   {:dispatch [:game/new-board (-> db ::los/setup ::los/grid-size)]}))
+   {:dispatch [:game/new-game (-> db ::los/setup ::los/grid-size)]}))
 
 ;; subscriptions
 
