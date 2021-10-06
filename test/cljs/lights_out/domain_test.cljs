@@ -6,17 +6,17 @@
    [lights-out.domain :as sut]
    [lights-out.state.core :as los]))
 
-(deftest new-board
+(deftest succeeded?
+  (is (= false (sut/succeeded? [false false true])))
+  (is (= true (sut/succeeded? [false false false]))))
+
+(deftest new-game
   (testing "grid-size copied in to game correctly"
     (is (= 1 (->> (sut/new-game 1) ::los/board ::los/grid-size))))
   (testing "grid is expected size"
     (is (= 9 (->> (sut/new-game 3) ::los/board ::los/grid count))))
   (testing "cells are all boolean"
     (is (->> (sut/new-game 4) ::los/board ::los/grid (every? boolean?)))))
-
-(deftest succeeded?
-  (is (= false (-> {::los/grid [false false true]} sut/succeeded?)))
-  (is (= true (-> {::los/grid [false false false]} sut/succeeded?))))
 
 (deftest neighbours
   (let [board {::los/grid-size 3 ::los/grid (into [] (repeat 9 false))}]

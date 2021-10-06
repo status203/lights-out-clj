@@ -2,17 +2,24 @@
   (:require
    [lights-out.state.core :as los]))
 
-(defn new-game
+(defn succeeded?
+  "Returns whether all cells in a supplied grid are off"
+  [grid]
+  (every? not grid))
+
+(defn- new-grid
   "Returns a vector of true/false indicating which cells are lit. Cells run
   left->right, top->bottom"
   [size]
-  {::los/board {::los/grid-size size
-           ::los/grid (into [] (repeatedly (* size size) #(pos? (rand-int 2))))}})
+  (into [] (repeatedly (* size size) #(pos? (rand-int 2)))))
 
-(defn succeeded?
-  "Returns whether all cells in a supplied board are off"
-  [board]
-  (every? not (::los/grid board)))
+(defn new-game
+  "Returns a new (unfinished) game."
+  [size]
+  {::los/board 
+   {::los/grid-size size
+    ::los/grid (first (filter (complement succeeded?) 
+                              (repeatedly #(new-grid size))))}})
 
 (defn- neighbours
   "Returns a vector of indexes for a cell's neighbours"
@@ -35,9 +42,11 @@
                      cell)))
 
 (defn toggle-cell-in-board
-  "Given a board and the index of a cell, returns a new board with the specified
-   cell (and it's cardinal neighbours lit status toggled)"
+  "Given an unfinished board and the index of a cell, returns a new board with 
+   the specified cell and it's cardinal neighbours lit status toggled"
   [{:keys [::los/grid ::los/grid-size] :as board} cell]
-  (assoc-in board 
-            [::los/grid]
-            (toggle-cell-in-grid grid grid-size cell)))
+  (if (succeeded? grid)
+    board
+    (assoc-in board
+              [::los/grid]
+              (toggle-cell-in-grid grid grid-size cell))))

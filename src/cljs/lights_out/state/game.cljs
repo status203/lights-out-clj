@@ -28,11 +28,6 @@
    (-> db ::los/game ::los/board)))
 
 (rf/reg-sub
- :game/succeeded?
- :<- [:game/board]
- (fn [board _] (when board (domain/succeeded? board))))
-
-(rf/reg-sub
  :game/grid
  :<- [:game/board]
  (fn [board [_]]
@@ -43,3 +38,8 @@
  :<- [:game/board]
  (fn [board [_]]
    (when board (::los/grid-size board))))
+
+(rf/reg-sub
+ :game/succeeded?
+ :<- [:game/grid]
+ (fn [grid _] (when grid (domain/succeeded? grid))))
