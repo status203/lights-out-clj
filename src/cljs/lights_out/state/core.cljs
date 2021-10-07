@@ -21,8 +21,11 @@
                       #(= (* (::grid-size %) (::grid-size %))
                           (count (::grid %)))))
 
-(s/def ::game (s/nilable 
-               (s/and (s/keys :req [::board])))) ; Will also contain history later
+(s/def ::move nat-int?)
+(s/def ::history (s/coll-of ::move :kind vector?))
+
+(s/def ::game (s/nilable
+               (s/keys :req [::board ::history]))) ; Will also contain history later
 
 (s/def ::app-schema (s/keys :req [::setup ::game]))
 ;; # State

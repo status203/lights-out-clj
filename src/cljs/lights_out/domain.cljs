@@ -18,8 +18,9 @@
   [size]
   {::los/board 
    {::los/grid-size size
-    ::los/grid (first (filter (complement succeeded?) 
-                              (repeatedly #(new-grid size))))}})
+    ::los/grid (first (filter (complement succeeded?)
+                              (repeatedly #(new-grid size))))}
+   ::los/history []})
 
 (defn- neighbours
   "Returns a vector of indexes for a cell's neighbours"
@@ -41,13 +42,24 @@
           grid (conj (neighbours grid-size cell)
                      cell)))
 
-(defn toggle-cell-in-board
+(def col-labels (into [] (for [col (range 26)] (char (+ 65 col)))))
+(def row-labels (into [] (for [row (range 26)] (str (inc row)))))
+
+
+(defn cell->label
+  [cell size]
+  (str (get col-labels (rem cell size))
+       (get row-labels (quot cell size))))
+
+(defn toggle-cell-in-game
   "Given an unfinished board and the index of a cell, returns a new board with 
    the specified cell and it's cardinal neighbours lit status toggled"
-  [{:keys [::los/grid ::los/grid-size] :as board} cell]
+  [{{:keys [::los/grid ::los/grid-size]} ::los/board :as game}
+   cell]
   (if (succeeded? grid)
-    board
-    (assoc-in board
-              [::los/grid]
-              (toggle-cell-in-grid grid grid-size cell))))
+    game
+    (-> game
+        (assoc-in [::los/board ::los/grid] (toggle-cell-in-grid grid grid-size cell))
+        (update-in [::los/history] conj cell))))
+
 

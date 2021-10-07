@@ -13,7 +13,7 @@
 (los/reg-event-db
  :game/toggle-cell
  (fn [db [_ cell]]
-   (update-in db [::los/game ::los/board] domain/toggle-cell-in-board cell)))
+   (update-in db [::los/game] domain/toggle-cell-in-game cell)))
 
 ;; subscriptions
 
@@ -38,6 +38,12 @@
  :<- [:game/board]
  (fn [board [_]]
    (when board (::los/grid-size board))))
+
+(rf/reg-sub
+ :game/history
+ :<- [:game/game]
+ (fn [game [_]]
+   (when game (::los/history game))))
 
 (rf/reg-sub
  :game/succeeded?

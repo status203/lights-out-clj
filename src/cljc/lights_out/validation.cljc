@@ -11,7 +11,8 @@
     nil))
 
 (defn validate
-  "If spec conforms then returns nil, otherwise returns an error string"
+  "If spec conforms then returns nil, otherwise throws an exception with the
+   error"
   [spec value]
   (if (= ::s/invalid (s/conform spec value))
     (let [error (s/explain-str spec value)]

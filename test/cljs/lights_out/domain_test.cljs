@@ -11,7 +11,7 @@
   (is (= true (sut/succeeded? [false false false]))))
 
 (deftest new-game
-  (testing "grid-size copied in to game correctly"
+    (testing "grid-size copied in to game correctly"
     (is (= 1 (->> (sut/new-game 1) ::los/board ::los/grid-size))))
   (testing "grid is expected size"
     (is (= 9 (->> (sut/new-game 3) ::los/board ::los/grid count))))
@@ -19,16 +19,25 @@
     (is (->> (sut/new-game 4) ::los/board ::los/grid (every? boolean?)))))
 
 (deftest toggling
-  (let [board {::los/grid-size 3 ::los/grid (into [] (repeat 9 true))}]
-    (is (= [false false true
-            false  true true
-            true  true  true] 
-           (::los/grid (sut/toggle-cell-in-board board 0))))
-    (is (= [true  false true
-            false false false
-            true  false true]
-           (::los/grid (sut/toggle-cell-in-board board 4))))
-    (is (= [true  true  true
-            true  true  false
-            true  false false]
-           (::los/grid (sut/toggle-cell-in-board board 8))))))
+  (let [game {::los/history []
+               ::los/board {::los/grid-size 3
+                            ::los/grid (into [] (repeat 9 true))}}]
+    (testing "correct cells toggled"
+      (is (= [false false true
+              false  true true
+              true  true  true]
+             (->> (sut/toggle-cell-in-game game 0) ::los/board ::los/grid)))
+      (is (= [true  false true
+              false false false
+              true  false true]
+             (->> (sut/toggle-cell-in-game game 4) ::los/board ::los/grid)))
+      (is (= [true  true  true
+              true  true  false
+              true  false false]
+             (->> (sut/toggle-cell-in-game game 8) ::los/board ::los/grid))))
+    (testing "move appended to history"
+      (is (= 4 (first (::los/history (sut/toggle-cell-in-game game 4))))))))
+
+(deftest cell->label
+  (is (= "A1" (sut/cell->label 0 5)))
+  (is (= "Z26" (sut/cell->label 675 26))))
