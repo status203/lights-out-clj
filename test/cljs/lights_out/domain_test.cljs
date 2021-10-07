@@ -18,17 +18,17 @@
   (testing "cells are all boolean"
     (is (->> (sut/new-game 4) ::los/board ::los/grid (every? boolean?)))))
 
-(deftest neighbours
-  (let [board {::los/grid-size 3 ::los/grid (into [] (repeat 9 false))}]
-    (is (= [true  true  false
-            true  false false
-            false false false] 
+(deftest toggling
+  (let [board {::los/grid-size 3 ::los/grid (into [] (repeat 9 true))}]
+    (is (= [false false true
+            false  true true
+            true  true  true] 
            (::los/grid (sut/toggle-cell-in-board board 0))))
-    (is (= [false true  false
-            true  true  true
-            false true  false]
+    (is (= [true  false true
+            false false false
+            true  false true]
            (::los/grid (sut/toggle-cell-in-board board 4))))
-    (is (= [false false false
-            false false true
-            false true  true]
+    (is (= [true  true  true
+            true  true  false
+            true  false false]
            (::los/grid (sut/toggle-cell-in-board board 8))))))

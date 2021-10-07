@@ -35,7 +35,7 @@
 
 (defn- toggle-cell-in-grid
   "Given a grid, grid-size and cell, returns a new grid with the specified cell
-   (and it's cardinal neighbours lit status toggled)"
+   (and it's cardinal neighbours) lit status toggled"
   [grid grid-size cell]
   (reduce (fn [grid cell] (update-in grid [cell] not))
           grid (conj (neighbours grid-size cell)
@@ -50,3 +50,4 @@
     (assoc-in board
               [::los/grid]
               (toggle-cell-in-grid grid grid-size cell))))
+
