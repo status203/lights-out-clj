@@ -6,9 +6,9 @@
    [lights-out.domain :as sut]
    [lights-out.state.core :as los]))
 
-(deftest succeeded?
-  (is (= false (sut/succeeded? [false false true])))
-  (is (= true (sut/succeeded? [false false false]))))
+(deftest completed
+  (is (= false (sut/completed? [false false true])))
+  (is (= true (sut/completed? [false false false]))))
 
 (deftest new-game
     (testing "grid-size copied in to game correctly"

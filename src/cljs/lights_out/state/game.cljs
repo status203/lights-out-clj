@@ -62,6 +62,6 @@
    (when game (::los/history game))))
 
 (rf/reg-sub
- :game/succeeded?
+ :game/completed?
  :<- [:game/grid]
- (fn [grid _] (when grid (domain/succeeded? grid))))
+ (fn [grid _] (when grid (domain/completed? grid))))

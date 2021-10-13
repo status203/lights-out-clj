@@ -26,11 +26,11 @@
      (when errors [setup-errors errors])]))
 
 (defn grid-cell
-  [size succeeded? index lit]
+  [size completed? index lit]
   (let [label (cell->label index size)
-        click-handler (when-not succeeded? #(rf/dispatch [:game/toggle-cell index]))
-        enter-handler (when-not succeeded? #(rf/dispatch [:game/enter-cell label]))
-        exit-handler  (when-not succeeded?  #(rf/dispatch [:game/leave-cell]))]
+        click-handler (when-not completed? #(rf/dispatch [:game/toggle-cell index]))
+        enter-handler (when-not completed? #(rf/dispatch [:game/enter-cell label]))
+        exit-handler  (when-not completed?  #(rf/dispatch [:game/leave-cell]))]
     ^{:key (str index)}
     [:div.cell (-> {:class (if lit "lit" "unlit")
 
@@ -39,19 +39,18 @@
                     :on-mouse-leave exit-handler})]))
 
 (defn display-game []
-  (let [succeeded? @(rf/subscribe [:game/succeeded?])
+  (let [completed @(rf/subscribe [:game/completed?])
         grid-size @(rf/subscribe [:game/grid-size])
         grid @(rf/subscribe [:game/grid])
         hovered-cell @(rf/subscribe [:game/hovered-cell])]
-    (println hovered-cell)
     [:div.column>div.box>div.columns
      [:div.square
-      (when succeeded? [:div.success "Success. Now where's the light switch?"])
+      (when completed [:div.success "Success. Now where's the light switch?"])
       [:div.grid-container
        (into [:div.grid
               {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
                        :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
-             (map-indexed (partial grid-cell grid-size succeeded?) grid))]]
+             (map-indexed (partial grid-cell grid-size completed) grid))]]
      [:div.column.is-narrow>div#hovered-cell hovered-cell]]))
 
 (defn history-move

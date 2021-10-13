@@ -2,7 +2,7 @@
   (:require
    [lights-out.state.core :as los]))
 
-(defn succeeded?
+(defn completed?
   "Returns whether all cells in a supplied grid are off"
   [grid]
   (every? not grid))
@@ -18,7 +18,7 @@
   [size]
   {::los/board 
    {::los/grid-size size
-    ::los/grid (first (filter (complement succeeded?)
+    ::los/grid (first (filter (complement completed?)
                               (repeatedly #(new-grid size))))
     ::los/hovered-cell "A1"}
    ::los/history []})
@@ -55,7 +55,7 @@
 (defn update-hover-value
   "Makes the hovered-cell nil if the game is complete"
   [game]
-  (if (succeeded? (get-in game [::los/board ::los/grid]))
+  (if (completed? (get-in game [::los/board ::los/grid]))
     (assoc-in game [::los/board ::los/hovered-cell] nil)
     game))
 
