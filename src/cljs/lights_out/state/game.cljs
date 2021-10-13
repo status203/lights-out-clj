@@ -15,6 +15,16 @@
  (fn [db [_ cell]]
    (update-in db [::los/game] domain/toggle-cell-in-game cell)))
 
+(los/reg-event-db
+ :game/enter-cell
+ (fn [db [_ cell-label]]
+   (assoc-in db [::los/game ::los/board ::los/hovered-cell] cell-label)))
+
+(los/reg-event-db
+ :game/leave-cell
+ (fn [db [_]]
+   (assoc-in db [::los/game ::los/board ::los/hovered-cell] nil)))
+
 ;; subscriptions
 
 (rf/reg-sub
@@ -26,6 +36,12 @@
  :game/board
  (fn [db _]
    (-> db ::los/game ::los/board)))
+
+(rf/reg-sub
+ :game/hovered-cell
+ :<- [:game/board]
+ (fn [board [_]]
+   (when board (::los/hovered-cell board))))
 
 (rf/reg-sub
  :game/grid

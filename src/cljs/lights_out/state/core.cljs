@@ -16,7 +16,8 @@
 ;; Game
 ; Whether cells are lit, left to right, top-to-bottom
 (s/def ::grid (s/coll-of boolean?))
-(s/def ::board (s/and (s/keys :req [::grid-size ::grid])
+(s/def ::hovered-cell (s/nilable string?)) ; nil when not hovering over a cell
+(s/def ::board (s/and (s/keys :req [::grid-size ::grid ::hovered-cell])
                       #(<= 1 (::grid-size %) 26)
                       #(= (* (::grid-size %) (::grid-size %))
                           (count (::grid %)))))
@@ -25,7 +26,7 @@
 (s/def ::history (s/coll-of ::move :kind vector?))
 
 (s/def ::game (s/nilable
-               (s/keys :req [::board ::history]))) ; Will also contain history later
+               (s/keys :req [::board ::history])))
 
 (s/def ::app-schema (s/keys :req [::setup ::game]))
 ;; # State

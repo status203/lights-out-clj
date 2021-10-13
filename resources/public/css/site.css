@@ -48,6 +48,13 @@
     background: white;
 }
 
+/* Display of which cell is hovered, not styling the cell when hovered */
+#hovered-cell { 
+    font-weight: bold;
+    font-size: 200%;
+    width: 2em;
+}
+
 .lit {
     background-color: yellow;
 }

@@ -19,7 +19,8 @@
   {::los/board 
    {::los/grid-size size
     ::los/grid (first (filter (complement succeeded?)
-                              (repeatedly #(new-grid size))))}
+                              (repeatedly #(new-grid size))))
+    ::los/hovered-cell "A1"}
    ::los/history []})
 
 (defn- neighbours
