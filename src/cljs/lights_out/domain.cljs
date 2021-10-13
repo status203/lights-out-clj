@@ -52,13 +52,21 @@
   (str (get col-labels (rem cell size))
        (get row-labels (quot cell size))))
 
+(defn update-hover-value
+  "Makes the hovered-cell nil if the game is complete"
+  [game]
+  (if (succeeded? (get-in game [::los/board ::los/grid]))
+    (assoc-in game [::los/board ::los/hovered-cell] nil)
+    game))
+
 (defn toggle-cell-in-game
   "Given an unfinished board and the index of a cell, returns a new board with 
    the specified cell and it's cardinal neighbours lit status toggled"
-  [{{:keys [::los/grid ::los/grid-size]} ::los/board :as game}
+  [{{:keys [::los/grid ::los/grid-size ::los/hovered-cell]} ::los/board :as game}
    cell]
   (-> game
       (assoc-in [::los/board ::los/grid] (toggle-cell-in-grid grid grid-size cell))
-      (update-in [::los/history] conj cell)))
+      (update-in [::los/history] conj cell)
+      update-hover-value))
 
 
