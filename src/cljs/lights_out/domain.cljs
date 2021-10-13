@@ -57,10 +57,8 @@
    the specified cell and it's cardinal neighbours lit status toggled"
   [{{:keys [::los/grid ::los/grid-size]} ::los/board :as game}
    cell]
-  (if (succeeded? grid)
-    game
-    (-> game
-        (assoc-in [::los/board ::los/grid] (toggle-cell-in-grid grid grid-size cell))
-        (update-in [::los/history] conj cell))))
+  (-> game
+      (assoc-in [::los/board ::los/grid] (toggle-cell-in-grid grid grid-size cell))
+      (update-in [::los/history] conj cell)))
 
 
