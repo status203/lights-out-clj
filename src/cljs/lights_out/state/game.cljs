@@ -62,6 +62,14 @@
    (when game (::los/history game))))
 
 (rf/reg-sub
+ :game/move-label
+ (fn [db [_ move-index size]]
+   (domain/cell->label (get-in db [::los/game ::los/history move-index ::los/move])
+                       size)))
+
+(rf/reg-sub
  :game/completed?
  :<- [:game/grid]
  (fn [grid _] (when grid (domain/completed? grid))))
+
+

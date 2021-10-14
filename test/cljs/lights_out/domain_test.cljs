@@ -36,7 +36,11 @@
               true  false false]
              (->> (sut/toggle-cell-in-game game 8) ::los/board ::los/grid))))
     (testing "move appended to history"
-      (is (= 4 (first (::los/history (sut/toggle-cell-in-game game 4))))))))
+      (let [expected {::los/move 4
+                      ::los/post-move-grid [true  false true
+                                            false false false
+                                            true  false true]}]
+        (is (= expected (first (::los/history (sut/toggle-cell-in-game game 4)))))))))
 
 (deftest cell->label
   (is (= "A1" (sut/cell->label 0 5)))

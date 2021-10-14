@@ -3,7 +3,7 @@
             [lights-out.validation :as validation]
             [re-frame.core :as rf]))
 
-;; # Spec
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; # Spec
 
 ;; Common
 (s/def ::grid-size pos-int?)
@@ -22,20 +22,25 @@
                       #(= (* (::grid-size %) (::grid-size %))
                           (count (::grid %)))))
 
-(s/def ::move nat-int?)
-(s/def ::history (s/coll-of ::move :kind vector?))
+(s/def ::move (s/nilable nat-int?))
+(s/def ::post-move-grid ::grid)
+(s/def ::history-entry (s/keys :req [::move ::post-move-grid]))
+(s/def ::history (s/coll-of ::history-entry :kind vector?))
 
 (s/def ::game (s/nilable
                (s/keys :req [::board ::history])))
 
 (s/def ::app-schema (s/keys :req [::setup ::game]))
-;; # State
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; # State
 (def initial-state
   {::setup {::grid-size 5
             ::errors nil}
    ::game nil})
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; # Standard interceptors. See https://day8.github.io/re-frame/Debugging/
 (defn valid-state?
   "validate the given db, writing any problems to console.error"

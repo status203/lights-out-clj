@@ -16,12 +16,12 @@
 (defn new-game
   "Returns a new (unfinished) game."
   [size]
-  {::los/board 
-   {::los/grid-size size
-    ::los/grid (first (filter (complement completed?)
-                              (repeatedly #(new-grid size))))
-    ::los/hovered-cell "A1"}
-   ::los/history []})
+  (let [grid (first (filter (complement completed?)
+                            (repeatedly #(new-grid size))))]
+    {::los/board {::los/grid-size size
+                  ::los/grid grid
+                  ::los/hovered-cell "A1"}
+     ::los/history [{::los/move nil ::los/post-move-grid grid}]}))
 
 (defn- neighbours
   "Returns a vector of indexes for a cell's neighbours"
@@ -49,8 +49,10 @@
 
 (defn cell->label
   [cell size]
-  (str (get col-labels (rem cell size))
-       (get row-labels (quot cell size))))
+  (if (nil? cell)
+      "--"
+      (str (get col-labels (rem cell size))
+           (get row-labels (quot cell size)))))
 
 (defn update-hover-value
   "Makes the hovered-cell nil if the game is complete"
@@ -59,14 +61,21 @@
     (assoc-in game [::los/board ::los/hovered-cell] nil)
     game))
 
+(defn update-history
+  "Adds a history entry to the history of the game"
+  [{{:keys [::los/grid]} ::los/board :as game} cell]
+  (let [entry {::los/move cell
+               ::los/post-move-grid grid}]
+    (update-in game [::los/history] #(conj % entry))))
+
 (defn toggle-cell-in-game
   "Given an unfinished board and the index of a cell, returns a new board with 
    the specified cell and it's cardinal neighbours lit status toggled"
-  [{{:keys [::los/grid ::los/grid-size ::los/hovered-cell]} ::los/board :as game}
+  [{{:keys [::los/grid ::los/grid-size]} ::los/board :as game}
    cell]
   (-> game
       (assoc-in [::los/board ::los/grid] (toggle-cell-in-grid grid grid-size cell))
-      (update-in [::los/history] conj cell)
+      (update-history cell)
       update-hover-value))
 
 

@@ -55,8 +55,9 @@
 
 (defn history-move
   [size index move]
-  ^{:key (str index)}
-  [:li (cell->label move size)])
+  
+  (let [label @(rf/subscribe [:game/move-label index size])]
+    ^{:key (str index)} [:li label]))
 
 (defn display-history []
   (let [history @(rf/subscribe [:game/history])
@@ -64,7 +65,7 @@
     [:div.column.is-narrow>div.box
      [:h2 "Moves"]
      (into [:ol
-            (map-indexed (partial history-move grid-size) history)])]))
+            (doall (map-indexed (partial history-move grid-size) history))])]))
 
 (defn when-game []
   (let [game @(rf/subscribe [:game/game])]
