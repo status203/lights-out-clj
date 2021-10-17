@@ -1,3 +1,4 @@
+/* Grid */
 .square {
     position: relative;
     width: 50%;
@@ -62,3 +63,19 @@
 .unlit {
     background-color: lightgrey;
 }
+
+/* History */
+.history {
+    counter-reset: entry-index -1;
+}
+
+.history li {
+    counter-increment: entry-index;
+}
+.history li::marker {
+    content: "" counter(entry-index) ": ";
+}
+.history li.start-position::marker {
+    content: "S: ";
+}
+
