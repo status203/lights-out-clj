@@ -32,6 +32,11 @@
 
 (s/def ::app-schema (s/keys :req [::setup ::game]))
 
+;; Display
+;; Could be displaying the game or a history entry.
+(s/def ::display-type #{:game :history})
+(s/def ::display (s/keys :req [::display-type ::grid ::grid-size]))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; # State
 (def initial-state

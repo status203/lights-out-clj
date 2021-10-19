@@ -1,19 +1,24 @@
 (ns lights-out.state.game
   (:require
+   [re-frame.core :as rf]
+   
    [lights-out.domain :as domain]
-   [lights-out.state.core :as los]
-   [re-frame.core :as rf]))
+   [lights-out.state.core :as los]))
 
-(los/reg-event-db
+(los/reg-event-fx
  :game/new-game
- (fn [db [_ size]]
-   (-> db
-       (assoc ::los/game (domain/new-game size)))))
+ (fn [{:keys [db]} [_ size]]
+   (let [{{:keys [::los/grid]} ::los/board :as game} (domain/new-game size)]
+     {:db (assoc db ::los/game game)
+      :dispatch [:display/game grid size]})))
 
-(los/reg-event-db
+(los/reg-event-fx
  :game/toggle-cell
- (fn [db [_ cell]]
-   (update-in db [::los/game] domain/toggle-cell-in-game cell)))
+ (fn [{db :db} [_ cell]]
+   (let [old-game (::los/game db)
+         {{:keys [::los/grid-size ::los/grid]} ::los/board :as game} (domain/toggle-cell-in-game old-game cell)]
+     {:db (assoc-in db [::los/game] game)
+      :dispatch [:display/game grid grid-size]})))
 
 (los/reg-event-db
  :game/enter-cell

@@ -3,7 +3,8 @@
             [lights-out.state.core :as los]
             [lights-out.state.routing]
             [lights-out.state.setup]
-            [lights-out.state.game]))
+            [lights-out.state.game]
+            [lights-out.state.display]))
 
 (rf/reg-event-db
  :app/initial-state

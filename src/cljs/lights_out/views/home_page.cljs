@@ -38,10 +38,8 @@
                     :on-mouse-enter enter-handler
                     :on-mouse-leave exit-handler})]))
 
-(defn display-game []
-  (let [completed @(rf/subscribe [:game/completed?])
-        grid-size @(rf/subscribe [:game/grid-size])
-        grid @(rf/subscribe [:game/grid])
+(defn show-game []
+  (let [{:keys [:grid-size :grid :completed]} @(rf/subscribe [:display/display])
         hovered-cell @(rf/subscribe [:game/hovered-cell])]
     [:div.column>div.box>div.columns
      [:div.square
@@ -59,7 +57,7 @@
   (let [label @(rf/subscribe [:game/move-label index size])]
     ^{:key (str index)} [:li {:class [(when (zero? index) "start-position")]} label]))
 
-(defn display-history []
+(defn show-history []
   (let [history @(rf/subscribe [:game/history])
         grid-size @(rf/subscribe [:game/grid-size])]
     [:div.column.is-narrow>div.box
@@ -71,8 +69,8 @@
   (let [game @(rf/subscribe [:game/game])]
     (if game 
       [:div.columns
-       [display-history]
-       [display-game]] 
+       [show-history]
+       [show-game]] 
       [:div.else])))
 
 
