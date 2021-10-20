@@ -7,20 +7,20 @@
 
 (los/reg-event-db
  :display/game
- (fn [db [_ grid size]]
-   (assoc db ::los/display {::los/display-type :game
-                            ::los/grid-size size
-                            ::los/grid grid})))
+ (fn [db [_ board]]
+   (assoc-in db [::los/display] {::los/display-type :game
+                                 ::los/board board})))
+
 
 ;; Subscriptions
 
-; Returns {:display-type ... :grid-size ... :grid .... :completed ...}
 (rf/reg-sub
- :display/display
- (fn [{{:keys [::los/display-type
-               ::los/grid-size
-               ::los/grid]} ::los/display} [_]]
-   {:display-type display-type
-    :grid-size grid-size
-    :grid grid
-    :completed (domain/completed? grid)}))
+ :display/board
+ (fn [{{{:keys [::los/grid ::los/grid-size ::los/move] :as board} ::los/board} ::los/display} [_]]
+   (when board
+     (let [completed? (domain/completed? grid)]
+       {:grid-size grid-size
+        :grid grid
+        :move move
+        :completed? completed?
+        :move-label (if completed? "" (domain/cell->label move grid-size))}))))

@@ -26,10 +26,9 @@
      (when errors [setup-errors errors])]))
 
 (defn grid-cell
-  [size completed? index lit]
-  (let [label (cell->label index size)
-        click-handler (when-not completed? #(rf/dispatch [:game/toggle-cell index]))
-        enter-handler (when-not completed? #(rf/dispatch [:game/enter-cell label]))
+  [completed? index lit]
+  (let [click-handler (when-not completed? #(rf/dispatch [:game/toggle-cell index]))
+        enter-handler (when-not completed? #(rf/dispatch [:game/enter-cell index]))
         exit-handler  (when-not completed?  #(rf/dispatch [:game/leave-cell]))]
     ^{:key (str index)}
     [:div.cell (-> {:class (if lit "lit" "unlit")
@@ -38,40 +37,36 @@
                     :on-mouse-enter enter-handler
                     :on-mouse-leave exit-handler})]))
 
-(defn show-game []
-  (let [{:keys [:grid-size :grid :completed]} @(rf/subscribe [:display/display])
-        hovered-cell @(rf/subscribe [:game/hovered-cell])]
+(defn show-board []
+  (let [{:keys [:grid-size :grid :move-label :completed?]} @(rf/subscribe [:display/board])]
     [:div.column>div.box>div.columns
      [:div.square
-      (when completed [:div.success "Success. Now where's the light switch?"])
+      (when completed? [:div.success "Success. Now where's the light switch?"])
       [:div.grid-container
        (into [:div.grid
               {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
                        :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
-             (map-indexed (partial grid-cell grid-size completed) grid))]]
-     [:div.column.is-narrow>div#hovered-cell hovered-cell]]))
+             (map-indexed (partial grid-cell completed?) grid))]]
+     [:div.column.is-narrow>div#hovered-cell move-label]]))
 
 (defn history-move
-  [size index move]
-  
-  (let [label @(rf/subscribe [:game/move-label index size])]
-    ^{:key (str index)} [:li {:class [(when (zero? index) "start-position")]} label]))
+  [idx]
+  (let [{:keys [:move-label]} @(rf/subscribe [:history/entry idx])]
+    ^{:key (str idx)} [:li {:class [(when (zero? idx) "start-position")]} move-label]))
 
 (defn show-history []
-  (let [history @(rf/subscribe [:game/history])
-        grid-size @(rf/subscribe [:game/grid-size])]
+  (let [entries-count @(rf/subscribe [:history/count])]
     [:div.column.is-narrow>div.box
      [:h2 "Moves"]
-     (into [:ol.history
-            (doall (map-indexed (partial history-move grid-size) history))])]))
+     (into [:ol.history]
+           (map history-move (range entries-count)))]))
 
 (defn when-game []
-  (let [game @(rf/subscribe [:game/game])]
-    (if game 
-      [:div.columns
-       [show-history]
-       [show-game]] 
-      [:div.else])))
+  (let [display @(rf/subscribe [:display/board])]
+    (when display
+     [:div.columns
+      [show-history]
+      [show-board]])))
 
 
 (defn home-page []
