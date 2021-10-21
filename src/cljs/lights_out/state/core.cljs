@@ -34,9 +34,11 @@
 ;; Display
 (s/def ::display-type #{:game :history})
 (s/def ::display (s/nilable (s/keys :req [::display-type ::board])))
+(s/def ::stored-display ::display)
 
 
-(s/def ::app-schema (s/keys :req [::setup ::game ::history ::display]))
+(s/def ::app-schema (s/keys :req [::setup ::game ::history ::display]
+                            :opt [::stored-display]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; # State

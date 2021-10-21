@@ -11,6 +11,19 @@
    (assoc-in db [::los/display] {::los/display-type :game
                                  ::los/board board})))
 
+(los/reg-event-db
+ :display/historical
+ (fn [{display ::los/display :as db} [_ board]]
+   (-> db
+       (assoc-in [::los/display] {::los/display-type :history
+                                  ::los/board board})
+       (assoc-in [::los/stored-display] display))))
+
+(los/reg-event-db
+ :display/stored
+ (fn [{display ::los/stored-display :as db} [_]]
+   (assoc db ::los/display display)))
+
 
 ;; Subscriptions
 

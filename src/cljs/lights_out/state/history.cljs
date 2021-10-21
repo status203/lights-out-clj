@@ -21,4 +21,5 @@
          move (::los/move entry)
          size (::los/grid-size entry)
          label (domain/cell->label move size)]
-     {:move-label label})))
+     {:entry entry
+      :move-label label})))

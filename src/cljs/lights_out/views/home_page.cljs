@@ -29,13 +29,13 @@
   [completed? index lit]
   (let [click-handler (when-not completed? #(rf/dispatch [:game/toggle-cell index]))
         enter-handler (when-not completed? #(rf/dispatch [:game/enter-cell index]))
-        exit-handler  (when-not completed?  #(rf/dispatch [:game/leave-cell]))]
+        leave-handler  (when-not completed?  #(rf/dispatch [:game/leave-cell]))]
     ^{:key (str index)}
-    [:div.cell (-> {:class (if lit "lit" "unlit")
+    [:div.cell {:class (if lit "lit" "unlit")
 
-                    :on-click click-handler
-                    :on-mouse-enter enter-handler
-                    :on-mouse-leave exit-handler})]))
+                :on-click click-handler
+                :on-mouse-enter enter-handler
+                :on-mouse-leave leave-handler}]))
 
 (defn show-board []
   (let [{:keys [:grid-size :grid :move-label :completed?]} @(rf/subscribe [:display/board])]
@@ -51,8 +51,14 @@
 
 (defn history-move
   [idx]
-  (let [{:keys [:move-label]} @(rf/subscribe [:history/entry idx])]
-    ^{:key (str idx)} [:li {:class [(when (zero? idx) "start-position")]} move-label]))
+  (let [{:keys [:move-label :entry]} @(rf/subscribe [:history/entry idx])
+        enter-handler #(rf/dispatch [:display/historical entry])
+        leave-handler #(rf/dispatch [:display/stored])]
+    ^{:key (str idx)} [:li {:class [(when (zero? idx) "start-position")]
+
+                            :on-mouse-enter enter-handler
+                            :on-mouse-leave leave-handler}
+                       move-label]))
 
 (defn show-history []
   (let [entries-count @(rf/subscribe [:history/count])]
