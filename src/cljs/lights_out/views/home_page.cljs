@@ -38,16 +38,18 @@
                 :on-mouse-leave leave-handler}]))
 
 (defn show-board []
-  (let [{:keys [:grid-size :grid :move-label :completed?]} @(rf/subscribe [:display/board])]
-    [:div.column>div.box>div.columns
-     [:div.square
-      (when completed? [:div.success "Success. Now where's the light switch?"])
-      [:div.grid-container
-       (into [:div.grid
-              {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
-                       :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
-             (map-indexed (partial grid-cell completed?) grid))]]
-     [:div.column.is-narrow>div#hovered-cell move-label]]))
+  (let [{:keys [:grid-size :grid :move-label :completed?]} @(rf/subscribe [:display/board])
+        historical? @(rf/subscribe [:display/historical?])]
+    [:div.column>div.box {:class [(when historical? "historical")]}
+     [:div.columns 
+      [:div.square
+       (when completed? [:div.success "Success. Now where's the light switch?"])
+       [:div.grid-container
+        (into [:div.grid
+               {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
+                        :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
+              (map-indexed (partial grid-cell completed?) grid))]]
+      [:div.column.is-narrow>div#hovered-cell move-label]]]))
 
 (defn history-move
   [idx]
@@ -64,7 +66,7 @@
   (let [entries-count @(rf/subscribe [:history/count])]
     [:div.column.is-narrow>div.box
      [:h2 "Moves"]
-     (into [:ol.history]
+     (into [:ol#history]
            (map history-move (range entries-count)))]))
 
 (defn when-game []

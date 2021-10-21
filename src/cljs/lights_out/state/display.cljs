@@ -37,3 +37,8 @@
         :move move
         :completed? completed?
         :move-label (if completed? "" (domain/cell->label move grid-size))}))))
+
+(rf/reg-sub
+ :display/historical?
+ (fn [{{type ::los/display-type} ::los/display} [_]]
+   (= :history type)))

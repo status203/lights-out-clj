@@ -1,4 +1,11 @@
+/* Shared */
+
+
 /* Grid */
+.historical {
+    background-color: palegoldenrod;
+}
+
 .square {
     position: relative;
     width: 50%;
@@ -65,17 +72,25 @@
 }
 
 /* History */
-.history {
+#history {
     counter-reset: entry-index -1;
+    list-style-position: outside;
 }
 
-.history li {
+#history li {
     counter-increment: entry-index;
 }
-.history li::marker {
+#history li::marker {
     content: "" counter(entry-index) ": ";
 }
-.history li.start-position::marker {
+#history li.start-position::marker {
     content: "S: ";
 }
 
+#history li:hover {
+    background-color: palegoldenrod;
+}
+#history li:hover::after {
+    font-size: 100%;
+    content: " \279C";
+}
