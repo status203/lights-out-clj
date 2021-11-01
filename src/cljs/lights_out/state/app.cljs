@@ -6,7 +6,8 @@
             [lights-out.state.display]
             [lights-out.state.game]
             [lights-out.state.setup]
-            [lights-out.state.history]))
+            [lights-out.state.history]
+            [lights-out.state.options]))
 
 (rf/reg-event-db
  :app/initial-state

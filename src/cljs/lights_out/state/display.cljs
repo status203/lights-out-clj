@@ -5,6 +5,8 @@
    [lights-out.domain :as domain]
    [lights-out.state.core :as los]))
 
+;; Handlers
+
 (los/reg-event-db
  :display/game
  (fn [db [_ board]]
@@ -37,3 +39,10 @@
         :move move
         :completed? completed?
         :move-label (if completed? "" (domain/cell->label move grid-size))}))))
+
+(rf/reg-sub
+ :display/move-label
+ :<- [:display/board]
+ (fn [{:keys [:move :grid :grid-size]} [_]]
+   (let [completed? (domain/completed? grid)]
+     (if completed? "" (domain/cell->label move grid-size)))))
