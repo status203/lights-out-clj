@@ -37,11 +37,57 @@
                 :on-mouse-enter enter-handler
                 :on-mouse-leave leave-handler}]))
 
+(def highlight-options-data
+  [{:value :none         :label "None"}
+   {:value :move-only    :label "Move only"}
+   {:value :all-affected :label "All affected"}])
+
+(defn highlight-option [opt-name value label checked]
+  (let [opt-key (str opt-name "-" (name value))
+        check (fn [attrs] (if checked (assoc attrs :checked "checked") attrs))
+        attrs (-> {:type "radio"
+                   :name opt-name
+                   :id opt-key
+                   :value value}
+                  check)]
+    [:div
+     ^{:key opt-key}
+     [:input attrs]
+     [:label {:for opt-key} label]]))
+
+(defn highlight-options [opt-name]
+  (into [:div]
+        (for [{:keys [:value :label]} highlight-options-data]
+          (highlight-option opt-name value label true))))
+
+(comment
+  (highlight-options "aoeu")
+  (str "aouoe" "-" (name :none)))
+
+(defn options []
+  (let [options @(rf/subscribe [:options/options])]
+    [:div#options
+     [:h2 "Options"]
+     [:h3 "Game highlight:"]
+     (highlight-options "hypothetical-highlight")
+
+     [:h3 "History highlight:"]
+     (highlight-options "historical-highlight")]))
+
+(comment
+  (highlight-options "test")
+  (name :aoeu))
+
+(defn misc []
+  (let [move-label @(rf/subscribe [:display/move-label])]
+    [:div.column.is-narrow
+     [:div.hovered-cell [:h2 " Move: " move-label]]
+     [options]]))
 (defn show-board []
   (let [{:keys [:grid-size :grid :move-label :completed?]} @(rf/subscribe [:display/board])
         historical? @(rf/subscribe [:display/historical?])]
     [:div.column>div.box {:class [(when historical? "historical")]}
-     [:div.columns 
+     [:div.columns
       [:div.square
        (when completed? [:div.success "Success. Now where's the light switch?"])
        [:div.grid-container
@@ -49,7 +95,7 @@
                {:style {:grid-template-columns (str "repeat(" grid-size ", 1fr)")
                         :grid-template-rows    (str "repeat(" grid-size ", 1fr)")}}]
               (map-indexed (partial grid-cell completed?) grid))]]
-      [:div.column.is-narrow>div#hovered-cell move-label]]]))
+      [misc]]]))
 
 (defn history-move
   [idx]
@@ -72,9 +118,9 @@
 (defn when-game []
   (let [display @(rf/subscribe [:display/board])]
     (when display
-     [:div.columns
-      [show-history]
-      [show-board]])))
+      [:div.columns
+       [show-history]
+       [show-board]])))
 
 
 (defn home-page []
