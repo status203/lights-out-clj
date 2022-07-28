@@ -60,7 +60,10 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; # Standard interceptors. See https://day8.github.io/re-frame/Debugging/
+;;
+;; # Standard interceptors. 
+;; See https://day8.github.io/re-frame/Debugging/
+;;
 (defn valid-state?
   "validate the given db, writing any problems to console.error"
   [db]
