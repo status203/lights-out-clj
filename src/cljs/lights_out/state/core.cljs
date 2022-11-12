@@ -37,15 +37,15 @@
 (s/def ::stored-display ::display)
 
 
-(s/def ::app-schema (s/keys :req [::setup ::game ::history ::display]
-                            :opt [::stored-display]))
-
 ;; Options
 (s/def ::highlight-type #{:none :move-only :all-affected})
 (s/def ::hypothetical-highlight ::highlight-type)
 (s/def ::historical-highlight ::highlight-type)
 (s/def ::options (s/keys :req [::hypothetical-highlight
                                ::historical-highlight]))
+
+(s/def ::app-schema (s/keys :req [::setup ::game ::history ::display ::options]
+                            :opt [::stored-display]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; # State

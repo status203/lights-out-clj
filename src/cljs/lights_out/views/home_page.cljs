@@ -83,8 +83,9 @@
     [:div.column.is-narrow
      [:div.hovered-cell [:h2 " Move: " move-label]]
      [options]]))
+
 (defn show-board []
-  (let [{:keys [:grid-size :grid :move-label :completed?]} @(rf/subscribe [:display/board])
+  (let [{:keys [:grid-size :grid :completed?]} @(rf/subscribe [:display/board])
         historical? @(rf/subscribe [:display/historical?])]
     [:div.column>div.box {:class [(when historical? "historical")]}
      [:div.columns
